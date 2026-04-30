@@ -32,7 +32,7 @@ const QUESTION_DEFINITIONS = {
       id: "quick_result",
       section: "result",
       title: "今日の結果は？",
-      description: "あとから直せるので、まずはいちばん近いものを選んでください",
+      description: "まずは近いものを選んでください",
       type: "single_select",
       required: true,
       allowSkip: false,
@@ -42,7 +42,7 @@ const QUESTION_DEFINITIONS = {
       id: "quick_location",
       section: "location",
       title: "場所は？",
-      description: "前回や最近の候補から選べます",
+      description: "前回や最近の場所から選べます",
       type: "single_select",
       required: false,
       allowSkip: false,
@@ -72,7 +72,7 @@ const QUESTION_DEFINITIONS = {
       id: "quick_tackle",
       section: "tackle",
       title: "使ったものは？",
-      description: "前回や最近の候補から選べます",
+      description: "前回や最近の道具から選べます",
       type: "single_select",
       required: false,
       allowSkip: false,
@@ -82,7 +82,7 @@ const QUESTION_DEFINITIONS = {
       id: "quick_photo",
       section: "photo",
       title: "写真は追加しますか？",
-      description: "その場で追加しておくと、あとで記録を思い出しやすくなります",
+      description: "その場で残しておくと あとで見返しやすくなります",
       type: "photo",
       required: false,
       allowSkip: true,
@@ -1456,7 +1456,7 @@ const appState = {
   isReady: false,
   currentRoute: null,
   storageMode: "local",
-  searchMode: "entry",
+  searchMode: "basic",
   trips: [],
   drafts: [],
   candidateData: {},
@@ -1565,7 +1565,7 @@ function draftResumeLeadText() {
 function draftEmptyText() {
   return isRemoteStorageMode()
     ? "いまは下書きがありません 入力を始めると このサイトに自動保存されます"
-    : "いまは下書きがありません入力を始めると、この端末に自動保存されます";
+    : "いまは下書きがありません 入力を始めると この端末に自動保存されます";
 }
 
 function latestDraftSavedText(lastSavedAt) {
@@ -1803,12 +1803,12 @@ function focusErrorSummaryIfNeeded() {
 
 function renderShell(pageHtml, route) {
   return `
-    <div class="app-shell">
+    <div class="app-shell" data-route="${escapeHtml(route.name)}">
       <header class="site-header">
         <div class="site-header__inner">
         <div class="brand">
             <h1 class="brand__title">ツリノート</h1>
-            <div class="brand__caption">釣行を残して 次の一手へ</div>
+            <div class="brand__caption">釣りの記録を残す</div>
           </div>
           <nav class="site-nav" aria-label="主なメニュー">
             <a href="#/home" ${route.name === "home" ? 'aria-current="page"' : ""}>ホーム</a>
@@ -2499,7 +2499,7 @@ function renderPreviousNextTryCard(excludeTripId = "") {
       <p class="muted">${
         previousNextTry
           ? `${escapeHtml(previousNextTry.next_try)}`
-          : "記録が増えると ここに次回のヒントが出ます"
+          : "前回書いたことを ここで見返せます"
       }</p>
       <p class="status-card__accent-note">釣れなかった日も、次の一手になる</p>
       <p class="status-card__support">反応なしの日も、場所や道具を残しておけば<br />次の釣行のヒントになります</p>
@@ -2518,8 +2518,8 @@ function renderHomeHeroVisual() {
       <span class="home-hero-image-label">水辺のログ</span>
       <img class="home-hero-image" src="./assets/photos/home-hero-user.jpg" alt="水面に向けたロッドと、朝夕の空気を感じる水辺の景色" onerror="this.hidden=true;this.nextElementSibling.hidden=false;this.parentElement.classList.add('is-fallback')" />
       <div class="home-hero-image-fallback" hidden>
-        <strong>釣りに出る前の空気を残す場所</strong>
-        <span>今日の釣りを短く残して あとでゆっくり振り返れます</span>
+        <strong>釣りに向かう気分を残す場所</strong>
+        <span>その日の様子を短く残して あとで見返せます</span>
       </div>
     </figure>
   `;
@@ -2544,7 +2544,7 @@ async function renderHomePage() {
               <span>次の一投は</span>
               <span>前回の記録から</span>
             </h2>
-            <p class="page-lead home-hero-lead">釣れた日も、反応がなかった日も<br />自分だけのヒントとして残せます</p>
+            <p class="page-lead home-hero-lead">釣れた日も 反応がなかった日も<br />あとで見返せるように残せます</p>
           </div>
           <div class="hero-primary reveal-card reveal-card--delay-2">
             <button class="hero-action hero-action--primary" type="button" data-home-action="new">
@@ -2569,7 +2569,7 @@ async function renderHomePage() {
                 <div class="section-header">
                   <div>
                     <h3 class="section-title">下書き</h3>
-                    <p class="muted">${escapeHtml(formatDateTime(latestDraft.meta.last_saved_at))} の続きです</p>
+                    <p class="muted">${escapeHtml(formatDateTime(latestDraft.meta.last_saved_at))} の下書きです</p>
                   </div>
                   <button class="button-secondary" type="button" data-home-action="resume">続きから開く</button>
                 </div>
@@ -2661,8 +2661,6 @@ async function renderWizardPage() {
     `
     : `
       <span class="pill">現在: ${escapeHtml(currentSectionLabel)}</span>
-      <span class="pill">目安 ${stepIndex + 1} / ${wizardSteps.length}</span>
-      <span class="pill ${bundle.trip.status === "draft" ? "pill--draft" : "pill--final"}">${bundle.trip.status === "draft" ? "下書き" : "保存済み"}</span>
       <span data-save-live aria-live="polite" aria-atomic="true" role="status">${renderSavePill()}</span>
     `;
   return `
@@ -2759,83 +2757,18 @@ function hasActiveSearchFilters() {
   return Object.values(appState.filters).some((value) => value !== "");
 }
 
-function renderSearchEntryCards() {
-  const entries = [
-    {
-      action: "open-search-mode",
-      value: "basic",
-      title: "同じ場所の記録を見る",
-      description: "場所から近い記録を探します",
-    },
-    {
-      action: "open-search-mode",
-      value: "basic",
-      title: "魚種で探す",
-      description: "魚種から記録を見返します",
-    },
-    {
-      action: "open-search-mode",
-      value: "basic",
-      title: "道具で探す",
-      description: "釣法やルアーから探します",
-    },
-    {
-      action: "open-search-no-response",
-      title: "反応なしの日を見る",
-      description: "釣れなかった日のヒントを見返します",
-      warm: true,
-    },
-    {
-      action: "open-search-mode",
-      value: "detailed",
-      title: "くわしく探す",
-      description: "条件を指定して探します",
-    },
-  ];
-  return `
-    <div class="search-entry-grid">
-      ${entries
-        .map(
-          (entry) => `
-            <button
-              class="search-entry-card${entry.warm ? " search-entry-card--warm" : ""}"
-              type="button"
-              data-action="${entry.action}"
-              ${entry.value ? `data-search-mode="${entry.value}"` : ""}
-            >
-              <strong>${entry.title}</strong>
-              <span>${entry.description}</span>
-            </button>
-          `,
-        )
-        .join("")}
-    </div>
-  `;
-}
-
 async function renderRecordListPage() {
   const filteredTrips = filterTrips(appState.trips, appState.filters);
   const cards = await Promise.all(filteredTrips.map((trip) => renderTripCard(trip, "final")));
-  const showSearchEntry = appState.searchMode === "entry" && !hasActiveSearchFilters();
   const showDetailedSearch = appState.searchMode === "detailed";
   return `
     <section class="notebook-card" aria-labelledby="records-title">
       <div class="section-header">
         <div>
           <h2 class="page-heading" id="records-title">記録一覧</h2>
-          <p class="page-lead">${showSearchEntry ? "振り返りたい切り口から記録を探せます" : "条件を入れて記録を探せます"}</p>
+          <p class="page-lead">条件を入れて記録を探せます</p>
         </div>
       </div>
-      ${
-        showSearchEntry
-          ? `
-            <section class="search-entry-panel" aria-labelledby="search-entry-title">
-              <h3 class="section-title" id="search-entry-title">振り返りの入口</h3>
-              ${renderSearchEntryCards()}
-            </section>
-          `
-          : ""
-      }
       <search class="search-form" aria-labelledby="search-title">
         <div class="search-panel">
           <h3 class="section-title" id="search-title">検索</h3>
@@ -5597,20 +5530,6 @@ function handleGenericAction(event) {
     navigate(editDetailPath());
     return;
   }
-  if (action === "open-search-mode") {
-    appState.searchMode = event.currentTarget.dataset.searchMode === "detailed" ? "detailed" : "basic";
-    render();
-    return;
-  }
-  if (action === "open-search-no-response") {
-    appState.filters = {
-      ...DEFAULT_FILTERS,
-      result_type: "no_response",
-    };
-    appState.searchMode = "basic";
-    render();
-    return;
-  }
   if (action === "search-records") {
     appState.searchMode = "basic";
     render();
@@ -5625,7 +5544,7 @@ function handleGenericAction(event) {
   }
   if (action === "clear-search") {
     appState.filters = { ...DEFAULT_FILTERS };
-    appState.searchMode = "entry";
+    appState.searchMode = "basic";
     render();
     return;
   }
@@ -5657,7 +5576,7 @@ function handleGenericAction(event) {
 
 function applyRelatedSearch(kind, value) {
   if (!kind || !value) {
-    appState.searchMode = "entry";
+    appState.searchMode = "basic";
     navigate("#/records");
     return;
   }
