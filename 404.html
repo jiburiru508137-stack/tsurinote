@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>ツリノート</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#app-main">本文へ移動する</a>
+    <div id="app">
+      <main class="page" id="app-main">
+        <section class="backup-card" aria-labelledby="loading-title">
+          <h1 class="page-heading" id="loading-title">画面を読み込んでいます</h1>
+          <p class="page-lead">しばらく待っても表示されない場合は<br />ページを再読み込みしてください</p>
+        </section>
+      </main>
+    </div>
+    <script defer src="./src/app.bundle.js"></script>
+    <script>
+      setTimeout(function () {
+        if (window.__TSURINOTE_BOOTED__) {
+          return
+        }
+        var title = document.getElementById("loading-title")
+        if (title) {
+          title.textContent = "画面を開けません"
+        }
+        var lead = document.querySelector(".page-lead")
+        if (lead) {
+          lead.innerHTML = "必要なファイルを読み込めませんでした<br />ページを再読み込みしてください"
+        }
+      }, 1800)
+    </script>
+  </body>
+</html>
