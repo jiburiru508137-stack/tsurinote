@@ -2765,8 +2765,8 @@ async function renderRecordListPage() {
     <section class="notebook-card" aria-labelledby="records-title">
       <div class="section-header">
         <div>
-          <h2 class="page-heading" id="records-title">記録一覧</h2>
-          <p class="page-lead">条件を入れて記録を探せます</p>
+          <h2 class="page-heading" id="records-title">記録を探す</h2>
+          <p class="page-lead">条件を入れて探せます</p>
         </div>
       </div>
       <search class="search-form" aria-labelledby="search-title">
