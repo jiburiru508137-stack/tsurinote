@@ -666,6 +666,11 @@ a {
   gap: 14px;
 }
 
+.grid-cards--search-results {
+  align-items: start;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 360px));
+}
+
 .notebook-card--recent {
   margin-top: 0;
 }
@@ -1052,6 +1057,11 @@ fieldset.fieldset {
   border-radius: 12px;
   border: 1px solid var(--line-strong);
   background: rgba(255, 255, 255, 0.98);
+}
+
+.field input[type="date"],
+.field select {
+  padding-right: 44px;
 }
 
 .field textarea {
@@ -1622,6 +1632,10 @@ summary:focus-visible {
 
   .record-card__body {
     gap: 9px;
+  }
+
+  .grid-cards--search-results {
+    grid-template-columns: 1fr;
   }
 
   .choice-grid {

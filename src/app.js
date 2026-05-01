@@ -1391,7 +1391,7 @@ function hasActiveSearchFilters() {
 
 async function renderRecordListPage() {
   const filteredTrips = filterTrips(appState.trips, appState.filters);
-  const cards = await Promise.all(filteredTrips.map((trip) => renderTripCard(trip, "final")));
+  const cards = await Promise.all(filteredTrips.map((trip) => renderTripCard(trip, "final", { compact: true })));
   const showDetailedSearch = appState.searchMode === "detailed";
   return `
     <section class="notebook-card" aria-labelledby="records-title">
@@ -1507,7 +1507,7 @@ async function renderRecordListPage() {
       </search>
       ${
         cards.length
-          ? `<div class="grid-cards">${cards.join("")}</div>`
+          ? `<div class="grid-cards grid-cards--search-results">${cards.join("")}</div>`
           : `<div class="empty-card"><p>この条件では記録が見つかりませんでした場所や魚種の条件をゆるめて試してください</p></div>`
       }
     </section>
